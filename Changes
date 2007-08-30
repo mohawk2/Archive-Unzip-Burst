@@ -1,5 +1,9 @@
 Revision history for Perl extension Archive::Unzip::Burst.
 
-0.01  Sun Jul 29 16:45:12 2007
+0.02  Thu Aug 30 11:20 2007
+	- Fixed some packaging problems. (By default, MakeMaker
+          removes all Makefiles from MANIFEST. Tsk.)
+
+0.01  Sun Jul 29 16:45 2007
 	- original version as uploaded to CPAN
 
