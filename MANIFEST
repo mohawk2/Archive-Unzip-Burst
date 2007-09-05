@@ -1,7 +1,6 @@
 Burst.xs
 Changes
 lib/Archive/Unzip/Burst.pm
-Makefile
 Makefile.PL
 MANIFEST
 ppport.h

@@ -64,13 +64,16 @@ WriteMakefile(
 sub MY::postamble {
   require File::Copy;
   require File::Spec;
+  require Cwd;
+  
   my $unzip_dir = File::Spec->catdir("res", $unzip);
   my $use_makefile    = File::Spec->catfile($unzip_dir, $os, $osmakefile);
   my $makefile_target = File::Spec->catfile($unzip_dir, "Makefile");
   File::Copy::copy( $use_makefile, $makefile_target );
+  my $abs_unzip_dir = Cwd::abs_path($unzip_dir);
 "
 \$(MYEXTLIB): $makefile_target
-	cd $unzip_dir && \$(MAKE) $osmaketarget \$(PASSTHRU)
+	cd $unzip_dir && LD_LIBRARY_PATH=$abs_unzip_dir \$(MAKE) $osmaketarget \$(PASSTHRU)
 "
 }
 
