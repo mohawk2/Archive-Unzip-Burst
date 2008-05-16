@@ -86,7 +86,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.02_01';
+our $VERSION = '0.02_02';
 
 require XSLoader;
 XSLoader::load('Archive::Unzip::Burst', $VERSION);

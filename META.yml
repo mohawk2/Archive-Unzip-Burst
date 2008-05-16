@@ -1,12 +1,15 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         Archive-Unzip-Burst
-version:      0.02_01
-version_from: lib/Archive/Unzip/Burst.pm
-installdirs:  site
-requires:
+--- #YAML:1.0
+name:                Archive-Unzip-Burst
+version:             0.02_02
+abstract:            Featureless but fast ZIP extraction
+license:             perl
+author:              
+    - Steffen Mueller <smueller@cpan.org>
+generated_by:        ExtUtils::MakeMaker version 6.44
+distribution_type:   module
+requires:     
     Cwd:                           0
     File::Spec:                    0
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3
