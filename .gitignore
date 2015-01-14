@@ -1,0 +1,8 @@
+*.o
+*.bs
+/Burst.c
+*.so
+*.so.*
+*.dll
+_eumm
+/res/unzip-5.52/unzip_shlib
