@@ -5,4 +5,4 @@
 *.so.*
 *.dll
 _eumm
-/unzip-5.52/unzip_shlib
+/unzip-6.0/unzip_shlib

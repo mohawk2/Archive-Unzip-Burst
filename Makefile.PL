@@ -6,7 +6,7 @@ use warnings;
 use Config;
 my ($os, $osmakefile, $osmaketarget, $osobjext, @winobjs, $windllcmd, $winsys);
 
-my $unzip = "unzip-5.52";
+my $unzip = "unzip-6.0";
 my $exe = $Config::Config{_exe};
 my $o   = $Config::Config{obj_ext};
 my $objects;
@@ -80,7 +80,7 @@ if (not defined $os) {
 if ($os eq 'unix' or $os eq 'win32') {
   $objects = join ' ', map File::Spec->catfile($unzip, "$_$osobjext$o"),
     qw(
-      unzip crc32 crctab crypt envargs explode extract fileio globals
+      unzip crc32 crypt envargs explode extract fileio globals
       inflate list match process ttyio unreduce unshrink zipinfo api
     ), $os;
 } else {
