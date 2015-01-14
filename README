@@ -7,7 +7,7 @@ Instead, it only lets you extract a ZIP archive to some directory,
 about as fast as if you were using your system C<unzip> command
 itself.
 
-The module comes with its own copy of InfoZip's UnZip 5.52 included.
+The module comes with its own copy of InfoZip's UnZip 6.0 included.
 
 If you are looking for a full-featured interface to ZIP archives,
 you should look at Archive::Zip or the various IO::Compress::*
@@ -112,4 +112,3 @@ and its enclosed library freely, as well as commercially provided the above
 license information is not stripped. Thus, the license of the InfoZip
 library should not collide with the license of the compilation.
 But I am not a lawyer.
-
