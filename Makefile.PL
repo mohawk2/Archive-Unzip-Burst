@@ -16,10 +16,10 @@ if ( 0 ) {
 
   if( $winsys eq 'vc' ) {
     @winobjs = qw(crci386l crctabl);
-    $windllcmd = 'nmake -f win32/Makefile dll';
+    $windllcmd = '$(MAKE) $(USEMAKEFILE) win32/Makefile dll';
   } else {
     @winobjs = qw(crc32l crc_i386);
-    $windllcmd = 'mingw32-make -f win32/makefile.gcc dll';
+    $windllcmd = '$(MAKE) $(USEMAKEFILE) win32/makefile.gcc dll';
   }
   push @winobjs, qw(
     api cryptl explodel extractl fileiol globalsl inflatel listl
