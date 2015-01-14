@@ -4,7 +4,7 @@ use File::Spec;
 use strict;
 use warnings;
 use Config;
-use vars qw/$os $osmakefile $osmaketarget $osobjext @winobjs $windllcmd $winsys/;
+our ($os, $osmakefile, $osmaketarget, $osobjext, @winobjs, $windllcmd, $winsys);
 
 my $unzip = "unzip-5.52";
 

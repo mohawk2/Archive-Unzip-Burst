@@ -1,8 +1,7 @@
 use ExtUtils::MakeMaker;
 use Config;
-use vars qw/$os $osmakefile $osmaketarget $osobjext @winobjs $windllcmd $winsys/;
+our ($os, $osmakefile, $osmaketarget, $osobjext, @winobjs, $windllcmd, $winsys);
 require File::Spec;
-$Verbose = 1;
 my $exe = $Config::Config{_exe};
 my $o   = $Config::Config{obj_ext};
 
