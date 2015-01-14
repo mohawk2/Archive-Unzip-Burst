@@ -1,9 +1,9 @@
 use File::Spec;
 
-# runs 3 tests
+# runs 4 tests
 sub testrun {
   my $file = shift;
-  Archive::Unzip::Burst::unzip($file, "blah");
+  is Archive::Unzip::Burst::unzip($file, "blah"), 0, "unzip retval";
 
   ok -d("blah"), "specified dir exists";
   ok -d(File::Spec->catdir("blah", "t2")), "expected subdir exists";
