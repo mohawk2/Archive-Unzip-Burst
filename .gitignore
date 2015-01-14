@@ -6,3 +6,4 @@
 *.dll
 _eumm
 /res/unzip-5.52/unzip_shlib
+/res/libmyunzip.a

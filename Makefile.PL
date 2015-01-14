@@ -16,11 +16,11 @@ if ( $^O =~ /^MSWin/i ) {
     if( $winsys eq 'vc' ) {
         @winobjs = qw (api crci386l crctabl cryptl explodel extractl fileiol globalsl inflatel listl matchl ntl
                    processl unreducl unshrnkl win32l windll zipinfol);
-        $windllcmd = 'nmake -f win32/Makefile dll';
+        $windllcmd = '$(MAKE) $(USEMAKEFILE) win32/Makefile dll';
     } else {
         @winobjs = qw (api crc32l crc_i386 crctabl cryptl explodel extractl fileiol globalsl inflatel listl matchl ntl
                    processl unreducl unshrnkl win32l windll zipinfol);
-        $windllcmd = 'mingw32-make -f win32/makefile.gcc dll';
+        $windllcmd = '$(MAKE) $(USEMAKEFILE) win32/makefile.gcc dll';
     }
     
     my $oext = $Config::Config{obj_ext};
@@ -86,20 +86,20 @@ else {
   }
 
   WriteMakefile(
-      NAME              => 'Archive::Unzip::Burst',
-      VERSION_FROM      => 'lib/Archive/Unzip/Burst.pm', # finds $VERSION
-      PREREQ_PM         => {
-          'File::Spec' => '0',
-          'Cwd' => '0',
-        }, # e.g., Module::Name => 1.1
-      ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-        (ABSTRACT_FROM  => 'lib/Archive/Unzip/Burst.pm', # retrieve abstract from module
-         AUTHOR         => 'Steffen Mueller <smueller@cpan.org>') : ()),
-      LIBS              => [''], # e.g., '-lm'
-      DEFINE            => '-fPIC -DDLL -O3', # e.g., '-DHAVE_SOMETHING'
-      INC               => '-I.', # e.g., '-I. -I/usr/include/other'
-      MYEXTLIB => 'res/libmyunzip$(LIB_EXT)',
-      LICENSE           => 'perl',
+    NAME              => 'Archive::Unzip::Burst',
+    VERSION_FROM      => 'lib/Archive/Unzip/Burst.pm',
+    PREREQ_PM         => {
+      'File::Spec' => '0',
+      'Cwd' => '0',
+    },
+    CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 7.05_06 },
+    ABSTRACT_FROM  => 'lib/Archive/Unzip/Burst.pm',
+    AUTHOR         => 'Steffen Mueller <smueller@cpan.org>',
+    LIBS              => [''],
+    DEFINE            => '-fPIC -DDLL -O3',
+    INC               => '-I.',
+    MYEXTLIB => 'res/libmyunzip$(LIB_EXT)',
+    LICENSE           => 'perl',
   );
 
 } # end if not win32
@@ -117,8 +117,9 @@ sub MY::postamble {
   File::Copy::copy( $use_makefile, $makefile_target );
   my $abs_unzip_dir = Cwd::abs_path($unzip_dir);
 "
-\$(MYEXTLIB): $makefile_target
+\$(INST_DYNAMIC) : subdirs_static
+
+\$(MYEXTLIB) : $makefile_target
 	cd $unzip_dir && LD_LIBRARY_PATH=$abs_unzip_dir \$(MAKE) $osmaketarget \$(PASSTHRU)
 "
 }
-
