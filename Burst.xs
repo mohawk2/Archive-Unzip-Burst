@@ -66,6 +66,7 @@ UzpMain(int argc, char **argv)
     lpUserFunctions->replace = GetReplaceDlgRetVal;
     lpUserFunctions->SendApplicationMessage = ReceiveDllMessage;
 
+    lpDCL->StructVersID = UZ_DCL_STRUCTVER; /* version of this structure */
     lpDCL->ncflag = 0; /* Write to stdout if true */
     lpDCL->fQuiet = 2; /* 0 = We want all messages.
                   1 = fewer messages,
