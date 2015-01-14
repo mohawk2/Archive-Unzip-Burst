@@ -4,47 +4,15 @@ use File::Spec;
 use strict;
 use warnings;
 use Config;
-my ($os, $osmakefile, $osmaketarget, $osobjext, @winobjs, $windllcmd, $winsys);
 
+my ($os, $osmakefile, $osmaketarget, $osobjext);
 my $unzip = "unzip-6.0";
 my $exe = $Config::Config{_exe};
 my $o   = $Config::Config{obj_ext};
 my $objects;
 
-if ( 0 ) {
-  $winsys = ($Config::Config{cc} eq 'cl') ? 'vc' : 'mingw';
-
-  if( $winsys eq 'vc' ) {
-    @winobjs = qw(crci386l crctabl);
-    $windllcmd = '$(MAKE) $(USEMAKEFILE) win32/Makefile dll';
-  } else {
-    @winobjs = qw(crc32l crc_i386);
-    $windllcmd = '$(MAKE) $(USEMAKEFILE) win32/makefile.gcc dll';
-  }
-  push @winobjs, qw(
-    api cryptl explodel extractl fileiol globalsl inflatel listl
-    matchl ntl processl unreducl unshrnkl win32l windll zipinfol
-  );
-
-  $objects .= qq( $unzip/$_$o) for (@winobjs);
-
-  my $cleanfiles;
-
-  for(@winobjs) {
-      $cleanfiles .= qq($unzip/$_$o );
-  }
-
-  if( $winsys eq 'vc' ) {
-      $cleanfiles .= qq($unzip/windll.res $unzip/unzip32.lib $unzip/unzip32.exp);
-  } else {
-      $cleanfiles .= qq($unzip/windllrc$o $unzip/windll$o);
-  }
-  $cleanfiles .= qq( $unzip/unzip32.dll);
-
-}
-
 my %OS = (
-  win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'dll',           '',     0],
+  win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'lib CC_CPU_OPT= NOASM=1',           '',     0],
   linux => [qr/linux/i,   'unix',  'Makefile',     'generic_shlib', '.pic', 1],
   os2 =>   [qr/os2/i,     'os2',   'makefile.os2', 'gcc gccdyn',    '',     0],
   dos =>   [qr/dos/i,     'msdos', 'makefile.msc', 'default',       '',     0],
@@ -77,12 +45,19 @@ if (not defined $os) {
   $osmaketarget = $osdesc->[3];
 }
 
-if ($os eq 'unix' or $os eq 'win32') {
+if ($os eq 'unix') {
   $objects = join ' ', map File::Spec->catfile($unzip, "$_$osobjext$o"),
     qw(
       unzip crc32 crypt envargs explode extract fileio globals
-      inflate list match process ttyio unreduce unshrink zipinfo api
-    ), $os;
+      inflate list match process ttyio unreduce unshrink zipinfo api unix
+    );
+} elsif ($os eq 'win32') {
+  if ($Config{cc} =~ /\bgcc\b/) {
+    $objects = File::Spec->catfile($unzip, "libunzip32.a"),
+  } else {
+    $osmakefile = 'Makefile'; # use the VC nmake one and hope for best
+    $objects = File::Spec->catfile($unzip, "unzip32.lib"),
+  }
 } else {
   die "Funny OS. Don't know what to link.";
 }
@@ -91,14 +66,18 @@ WriteMakefile(
   NAME              => 'Archive::Unzip::Burst',
   VERSION_FROM      => 'lib/Archive/Unzip/Burst.pm',
   CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 7.05_06 },
-  ABSTRACT_FROM  => 'lib/Archive/Unzip/Burst.pm',
-  AUTHOR         => 'Steffen Mueller <smueller@cpan.org>',
+  ABSTRACT_FROM     => 'lib/Archive/Unzip/Burst.pm',
+  AUTHOR            => 'Steffen Mueller <smueller@cpan.org>',
   LIBS              => [''],
   DEFINE            => qq{-DDLL}, # not defines, removed -fPIC -O3
   INC               => "-I$unzip -I$unzip/$os",
   LICENSE           => 'perl',
-  clean  => {
-    FILES => "$objects $unzip/unzipstb$o $unzip/*.so $unzip/*.dll $unzip/*.so.* $unzip/unzip_shlib$exe $unzip/Makefile $unzip/*$o"
+  clean             => {
+    FILES => "$objects " . join(' ', map "$unzip/$_",
+      "unzipstb$o", "unzip_shlib$exe", "*$o", "windllrc$o", "windll$o",
+      qw(*.so *.dll *.so.* Makefile libunzip32.a unzip32.lib windll.res
+        unzip32.lib unzip32.exp unzip32.dll)
+    ),
   },
   OBJECT            => "Burst$o $objects",
 );
@@ -110,11 +89,13 @@ sub MY::postamble {
 
   my $use_makefile    = File::Spec->catfile($unzip, $os, $osmakefile);
   my $makefile_target = File::Spec->catfile($unzip, "Makefile");
-  File::Copy::copy( $use_makefile, $makefile_target );
-  my $abs_unzip_dir = Cwd::abs_path($unzip);
   my $cd = $self->cd($unzip, "\$(MAKE) $osmaketarget \$(PASTHRU)");
-"
+  <<EOF;
+
+$makefile_target :
+	\$(CP) $use_makefile $makefile_target
+
 $objects : $makefile_target
 	$cd
-"
+EOF
 }
