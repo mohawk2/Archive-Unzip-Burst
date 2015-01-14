@@ -94,8 +94,8 @@ WriteMakefile(
   ABSTRACT_FROM  => 'lib/Archive/Unzip/Burst.pm',
   AUTHOR         => 'Steffen Mueller <smueller@cpan.org>',
   LIBS              => [''],
-  DEFINE            => '-DDLL', # not defines, removed -fPIC -O3
-  INC               => "-Iunzip-5.52 -Iunzip-5.52/$os",
+  DEFINE            => qq{-DDLL}, # not defines, removed -fPIC -O3
+  INC               => "-I$unzip -I$unzip/$os",
   LICENSE           => 'perl',
   clean  => {
     FILES => "$objects $unzip/unzipstb$o $unzip/*.so $unzip/*.dll $unzip/*.so.* $unzip/unzip_shlib$exe $unzip/Makefile $unzip/*$o"

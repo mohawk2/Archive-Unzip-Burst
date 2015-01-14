@@ -6,8 +6,8 @@
 
 # if (defined(_WIN32))
 
-#include "unzip-5.52/windll/structs.h"
-#include "unzip-5.52/windll/decs.h"
+#include "windll/structs.h"
+#include "windll/decs.h"
 
 LPUSERFUNCTIONS lpUserFunctions;
 HANDLE hUF = (HANDLE)NULL;
@@ -187,7 +187,3 @@ _unzip(filename)
         RETVAL = r;
     OUTPUT:
         RETVAL
-
-
-
-
