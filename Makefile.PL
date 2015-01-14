@@ -4,122 +4,117 @@ use File::Spec;
 use strict;
 use warnings;
 use Config;
-our ($os, $osmakefile, $osmaketarget, $osobjext, @winobjs, $windllcmd, $winsys);
+my ($os, $osmakefile, $osmaketarget, $osobjext, @winobjs, $windllcmd, $winsys);
 
 my $unzip = "unzip-5.52";
+my $exe = $Config::Config{_exe};
+my $o   = $Config::Config{obj_ext};
+my $objects;
 
-if ( $^O =~ /^MSWin/i ) {
-    $winsys = ($Config::Config{cc} eq 'cl') ? 'vc' : 'mingw';
-    
-    my $obprefix = 'res/unzip-5.52';
-    
-    if( $winsys eq 'vc' ) {
-        @winobjs = qw (api crci386l crctabl cryptl explodel extractl fileiol globalsl inflatel listl matchl ntl
-                   processl unreducl unshrnkl win32l windll zipinfol);
-        $windllcmd = '$(MAKE) $(USEMAKEFILE) win32/Makefile dll';
-    } else {
-        @winobjs = qw (api crc32l crc_i386 crctabl cryptl explodel extractl fileiol globalsl inflatel listl matchl ntl
-                   processl unreducl unshrnkl win32l windll zipinfol);
-        $windllcmd = '$(MAKE) $(USEMAKEFILE) win32/makefile.gcc dll';
-    }
-    
-    my $oext = $Config::Config{obj_ext};
-    
-    my $objects = 'Burst' . $oext;
-    
-    $objects .= qq( $obprefix/$_$oext) for (@winobjs);
-    
-    
-    WriteMakefile(
-        NAME              => 'Archive::Unzip::Burst',
-        VERSION_FROM      => 'lib/Archive/Unzip/Burst.pm', # finds $VERSION
-        PREREQ_PM         => {
-            'File::Spec' => '0',
-            'Cwd' => '0',
-          }, # e.g., Module::Name => 1.1
-        ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-          (ABSTRACT_FROM  => 'lib/Archive/Unzip/Burst.pm', # retrieve abstract from module
-           AUTHOR         => 'Steffen Mueller <smueller@cpan.org>') : ()),
-        LDFROM            => $objects,
-        INC               => '-I.', # e.g., '-I. -I/usr/include/other'
-        LICENSE           => 'perl',
-    
-    );
-    
-} # end if win32
-else {
-  my @OS = qw(
-    win32 os2 dos macos linux
-  );
-  my %OS = (
-    win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'dll lib',       '',     0],
-    linux => [qr/linux/i,   'unix',  'Makefile',     'generic_shlib', '.pic', 1],
-    os2 =>   [qr/os2/i,     'os2',   'makefile.os2', 'gcc gccdyn',    '',     0],
-    dos =>   [qr/dos/i,     'msdos', 'makefile.msc', 'default',       '',     0],
-    macos => [qr/macos/i,   'unix',  'Makefile',     'generic_shlib', '.pic', 0],
+if ( 0 ) {
+  $winsys = ($Config::Config{cc} eq 'cl') ? 'vc' : 'mingw';
+
+  if( $winsys eq 'vc' ) {
+    @winobjs = qw(crci386l crctabl);
+    $windllcmd = 'nmake -f win32/Makefile dll';
+  } else {
+    @winobjs = qw(crc32l crc_i386);
+    $windllcmd = 'mingw32-make -f win32/makefile.gcc dll';
+  }
+  push @winobjs, qw(
+    api cryptl explodel extractl fileiol globalsl inflatel listl
+    matchl ntl processl unreducl unshrnkl win32l windll zipinfol
   );
 
-  foreach (@OS) {
-    my $desc = $OS{$_};
-    my $regex = $desc->[0];
-    if ($^O =~ $regex) {
-      $os = $desc->[1];
-      $osmakefile   = $desc->[2];
-      $osmaketarget = $desc->[3]||'generic_shlib';
-      $osobjext     = $desc->[4];
-      if (not $desc->[5]) {
-        warn "BEWARE! The module has not been tested on this OS!\n"
-            ."It turns out its working, please inform the maintainer so he can\n"
-            ."remove this notice. Thank you! (Patches welcome, too.)\n";
-      }
-      last;
-    }
+  $objects .= qq( $unzip/$_$o) for (@winobjs);
+
+  my $cleanfiles;
+
+  for(@winobjs) {
+      $cleanfiles .= qq($unzip/$_$o );
   }
 
-  if (not defined $os) {
-    warn "Could not determine that you are running any supported\n"
-        ."Operating System. I will try the generic 'unix' Makefile.\n";
-    my $osdesc = $OS{linux};
-    $os = $osdesc->[1];
-    $osmakefile = $osdesc->[2];
-    $osmaketarget = $osdesc->[3];
+  if( $winsys eq 'vc' ) {
+      $cleanfiles .= qq($unzip/windll.res $unzip/unzip32.lib $unzip/unzip32.exp);
+  } else {
+      $cleanfiles .= qq($unzip/windllrc$o $unzip/windll$o);
   }
+  $cleanfiles .= qq( $unzip/unzip32.dll);
 
-  WriteMakefile(
-    NAME              => 'Archive::Unzip::Burst',
-    VERSION_FROM      => 'lib/Archive/Unzip/Burst.pm',
-    PREREQ_PM         => {
-      'File::Spec' => '0',
-      'Cwd' => '0',
-    },
-    CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 7.05_06 },
-    ABSTRACT_FROM  => 'lib/Archive/Unzip/Burst.pm',
-    AUTHOR         => 'Steffen Mueller <smueller@cpan.org>',
-    LIBS              => [''],
-    DEFINE            => '-fPIC -DDLL -O3',
-    INC               => '-I.',
-    MYEXTLIB => 'res/libmyunzip$(LIB_EXT)',
-    LICENSE           => 'perl',
-  );
+}
 
-} # end if not win32
+my %OS = (
+  win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'dll',           '',     0],
+  linux => [qr/linux/i,   'unix',  'Makefile',     'generic_shlib', '.pic', 1],
+  os2 =>   [qr/os2/i,     'os2',   'makefile.os2', 'gcc gccdyn',    '',     0],
+  dos =>   [qr/dos/i,     'msdos', 'makefile.msc', 'default',       '',     0],
+  macos => [qr/macos/i,   'unix',  'Makefile',     'generic_shlib', '.pic', 0],
+);
 
+foreach (keys %OS) {
+  my $desc = $OS{$_};
+  my $regex = $desc->[0];
+  if ($^O =~ $regex) {
+    $os = $desc->[1];
+    $osmakefile   = $desc->[2];
+    $osmaketarget = $desc->[3]||'generic_shlib';
+    $osobjext     = $desc->[4];
+    if (not $desc->[5]) {
+      warn "BEWARE! The module has not been tested on this OS!\n"
+          ."It turns out its working, please inform the maintainer so he can\n"
+          ."remove this notice. Thank you! (Patches welcome, too.)\n";
+    }
+    last;
+  }
+}
+
+if (not defined $os) {
+  warn "Could not determine that you are running any supported\n"
+      ."Operating System. I will try the generic 'unix' Makefile.\n";
+  my $osdesc = $OS{linux};
+  $os = $osdesc->[1];
+  $osmakefile = $osdesc->[2];
+  $osmaketarget = $osdesc->[3];
+}
+
+if ($os eq 'unix' or $os eq 'win32') {
+  $objects = join ' ', map File::Spec->catfile($unzip, "$_$osobjext$o"),
+    qw(
+      unzip crc32 crctab crypt envargs explode extract fileio globals
+      inflate list match process ttyio unreduce unshrink zipinfo api
+    ), $os;
+} else {
+  die "Funny OS. Don't know what to link.";
+}
+
+WriteMakefile(
+  NAME              => 'Archive::Unzip::Burst',
+  VERSION_FROM      => 'lib/Archive/Unzip/Burst.pm',
+  CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 7.05_06 },
+  ABSTRACT_FROM  => 'lib/Archive/Unzip/Burst.pm',
+  AUTHOR         => 'Steffen Mueller <smueller@cpan.org>',
+  LIBS              => [''],
+  DEFINE            => '-DDLL', # not defines, removed -fPIC -O3
+  INC               => "-Iunzip-5.52 -Iunzip-5.52/$os",
+  LICENSE           => 'perl',
+  clean  => {
+    FILES => "$objects $unzip/unzipstb$o $unzip/*.so $unzip/*.dll $unzip/*.so.* $unzip/unzip_shlib$exe $unzip/Makefile $unzip/*$o"
+  },
+  OBJECT            => "Burst$o $objects",
+);
 
 sub MY::postamble {
-  return "" if $^O =~ /^MSWin/i;
+  my ($self) = @_;
   require File::Copy;
-  require File::Spec;
   require Cwd;
-  
-  my $unzip_dir = File::Spec->catdir("res", $unzip);
-  my $use_makefile    = File::Spec->catfile($unzip_dir, $os, $osmakefile);
-  my $makefile_target = File::Spec->catfile($unzip_dir, "Makefile");
-  File::Copy::copy( $use_makefile, $makefile_target );
-  my $abs_unzip_dir = Cwd::abs_path($unzip_dir);
-"
-\$(INST_DYNAMIC) : subdirs_static
 
-\$(MYEXTLIB) : $makefile_target
-	cd $unzip_dir && LD_LIBRARY_PATH=$abs_unzip_dir \$(MAKE) $osmaketarget \$(PASSTHRU)
+  my $use_makefile    = File::Spec->catfile($unzip, $os, $osmakefile);
+  my $makefile_target = File::Spec->catfile($unzip, "Makefile");
+  File::Copy::copy( $use_makefile, $makefile_target );
+  my $abs_unzip_dir = Cwd::abs_path($unzip);
+  my $cd = $self->cd($unzip, "\$(MAKE) $osmaketarget \$(PASTHRU)");
+"
+$objects : $makefile_target
+	$cd
 "
 }

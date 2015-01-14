@@ -6,9 +6,8 @@
 
 # if (defined(_WIN32))
 
-#include "res/unzip-5.52/windll/structs.h"
-#include "res/unzip-5.52/windll/decs.h"
-
+#include "unzip-5.52/windll/structs.h"
+#include "unzip-5.52/windll/decs.h"
 
 LPUSERFUNCTIONS lpUserFunctions;
 HANDLE hUF = (HANDLE)NULL;
