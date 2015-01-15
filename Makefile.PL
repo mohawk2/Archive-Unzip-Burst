@@ -12,7 +12,7 @@ my $o   = $Config::Config{obj_ext};
 my $objects;
 
 my %OS = (
-  win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'lib CC_CPU_OPT= NOASM=1',           '',     0],
+  win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'lib CC_CPU_OPT= NOASM=1',           '',     1],
   linux => [qr/linux/i,   'unix',  'Makefile',     'generic_shlib', '.pic', 1],
   os2 =>   [qr/os2/i,     'os2',   'makefile.os2', 'gcc gccdyn',    '',     0],
   dos =>   [qr/dos/i,     'msdos', 'makefile.msc', 'default',       '',     0],

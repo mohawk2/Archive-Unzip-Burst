@@ -16,11 +16,11 @@ HANDLE hDCL = (HANDLE)NULL;
 HANDLE hZCL = (HANDLE)NULL;
 DWORD dwPlatformId = 0xFFFFFFFF;
 int WINAPI DisplayBuf(LPSTR, unsigned long);
-int WINAPI GetReplaceDlgRetVal(LPSTR);
+int WINAPI GetReplaceDlgRetVal(LPSTR, unsigned);
 int WINAPI password(LPSTR, int, LPCSTR, LPCSTR);
-void WINAPI ReceiveDllMessage(unsigned long, unsigned long, unsigned,
+void WINAPI ReceiveDllMessage(z_uint8, z_uint8, unsigned,
     unsigned, unsigned, unsigned, unsigned, unsigned,
-    char, LPSTR, LPSTR, unsigned long, char);
+    char, LPCSTR, LPCSTR, unsigned long, char);
 
 static void FreeUpMemory(void);
 
@@ -94,7 +94,7 @@ UzpMain(int argc, char **argv)
     return r;
 }
 
-int WINAPI GetReplaceDlgRetVal(LPSTR filename)
+int WINAPI GetReplaceDlgRetVal(LPSTR filename, unsigned efbufsiz)
 {
     /* This is where you will decide if you want to replace, rename etc existing
        files.
@@ -121,10 +121,10 @@ static void FreeUpMemory(void)
    is actually never called in this example, but a dummy procedure had to
    be put in, so this was used.
  */
-void WINAPI ReceiveDllMessage(unsigned long ucsize, unsigned long csiz,
+void WINAPI ReceiveDllMessage(z_uint8 ucsize, z_uint8 csize,
     unsigned cfactor,
     unsigned mo, unsigned dy, unsigned yr, unsigned hh, unsigned mm,
-    char c, LPSTR filename, LPSTR methbuf, unsigned long crc, char fCrypt)
+    char c, LPCSTR filename, LPCSTR methbuf, unsigned long crc, char fCrypt)
 {
     char psLBEntry[_MAX_PATH];
     char LongHdrStats[] =
@@ -134,7 +134,7 @@ void WINAPI ReceiveDllMessage(unsigned long ucsize, unsigned long csiz,
     char szCompFactor[10];
     char sgn;
 
-    if (csiz > ucsize)
+    if (csize > ucsize)
        sgn = '-';
     else
        sgn = ' ';
@@ -143,7 +143,7 @@ void WINAPI ReceiveDllMessage(unsigned long ucsize, unsigned long csiz,
     else
        sprintf(szCompFactor, CompFactorStr, sgn, cfactor);
        wsprintf(psLBEntry, LongHdrStats,
-          ucsize, csiz, szCompFactor, mo, dy, yr, hh, mm, c, filename);
+          ucsize, csize, szCompFactor, mo, dy, yr, hh, mm, c, filename);
 
     printf("%s\n", psLBEntry);
 }
