@@ -84,6 +84,16 @@ WriteMakefile(
     OTHERLDFLAGS => $objects,
   },
   XSMULTI           => 1,
+  META_MERGE        => {
+    "meta-spec" => { version => 2 },
+    resources => {
+      repository => {
+        type => 'git',
+        url => 'git://github.com/mohawk2/Archive-Unzip-Burst',
+        web => 'https://github.com/mohawk2/Archive-Unzip-Burst',
+      },
+    },
+  },
 );
 
 sub MY::postamble {
