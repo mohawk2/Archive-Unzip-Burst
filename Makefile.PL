@@ -10,6 +10,7 @@ my $unzip = "unzip-6.0";
 my $exe = $Config::Config{_exe};
 my $o   = $Config::Config{obj_ext};
 my $objects;
+my $makefile_target = File::Spec->catfile($unzip, "Makefile");
 
 my %OS = (
   win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'lib CC_CPU_OPT= NOASM=1',           '',     1],
@@ -68,9 +69,8 @@ WriteMakefile(
   CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 7.05_06 },
   ABSTRACT_FROM     => 'lib/Archive/Unzip/Burst.pm',
   AUTHOR            => 'Steffen Mueller <smueller@cpan.org>',
-  LIBS              => [''],
   DEFINE            => qq{-DDLL}, # not defines, removed -fPIC -O3
-  INC               => "-I$unzip -I$unzip/$os",
+  INC               => "-I. -I$unzip -I$unzip/$os",
   LICENSE           => 'perl',
   clean             => {
     FILES => "$objects " . join(' ', map "$unzip/$_",
@@ -79,7 +79,11 @@ WriteMakefile(
         unzip32.lib unzip32.exp unzip32.dll)
     ),
   },
-  OBJECT            => "Burst$o $objects",
+  dynamic_lib       => {
+    INST_DYNAMIC_DEP => $makefile_target,
+    OTHERLDFLAGS => $objects,
+  },
+  XSMULTI           => 1,
 );
 
 sub MY::postamble {
@@ -88,14 +92,11 @@ sub MY::postamble {
   require Cwd;
 
   my $use_makefile    = File::Spec->catfile($unzip, $os, $osmakefile);
-  my $makefile_target = File::Spec->catfile($unzip, "Makefile");
   my $cd = $self->cd($unzip, "\$(MAKE) $osmaketarget \$(PASTHRU)");
   <<EOF;
 
 $makefile_target :
 	\$(CP) $use_makefile $makefile_target
-
-$objects : $makefile_target
 	$cd
 EOF
 }

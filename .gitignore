@@ -1,6 +1,6 @@
 *.o
 *.bs
-/Burst.c
+/lib/Archive/Unzip/Burst.c
 *.so
 *.so.*
 *.dll

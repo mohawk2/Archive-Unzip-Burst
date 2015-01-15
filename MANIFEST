@@ -1,12 +1,10 @@
-Burst.xs
 Changes
 MANIFEST
 Makefile.PL
 README
 lib/Archive/Unzip/Burst.pm
+lib/Archive/Unzip/Burst.xs
 ppport.h
-res/MYMETA.json
-res/MYMETA.yml
 t/01absolute.t
 t/02relative.t
 t/foo.zip
