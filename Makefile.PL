@@ -1,5 +1,7 @@
 use 5.006;
-use ExtUtils::MakeMaker;
+my $EUMM_version;
+BEGIN { $EUMM_version = '7.05_06' }
+use ExtUtils::MakeMaker $EUMM_version;
 use File::Spec;
 use strict;
 use warnings;
@@ -66,7 +68,7 @@ if ($os eq 'unix') {
 WriteMakefile(
   NAME              => 'Archive::Unzip::Burst',
   VERSION_FROM      => 'lib/Archive/Unzip/Burst.pm',
-  CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => 7.05_06 },
+  CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => $EUMM_version },
   ABSTRACT_FROM     => 'lib/Archive/Unzip/Burst.pm',
   AUTHOR            => 'Steffen Mueller <smueller@cpan.org>',
   DEFINE            => qq{-DDLL}, # not defines, removed -fPIC -O3
