@@ -8,6 +8,7 @@ about as fast as if you were using your system C<unzip> command
 itself.
 
 The module comes with its own copy of InfoZip's UnZip 6.0 included.
+That code lives at https://sourceforge.net/projects/infozip/
 
 If you are looking for a full-featured interface to ZIP archives,
 you should look at Archive::Zip or the various IO::Compress::*
