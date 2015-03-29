@@ -81,11 +81,15 @@ WriteMakefile(
         unzip32.lib unzip32.exp unzip32.dll)
     ),
   },
-  dynamic_lib       => {
-    INST_DYNAMIC_DEP => $makefile_target,
-    OTHERLDFLAGS => $objects,
-  },
   XSMULTI           => 1,
+  XSBUILD           => {
+    xs => {
+      'lib/Archive/Unzip/Burst' => {
+        OBJECT => "lib/Archive/Unzip/Burst\$(OBJ_EXT) $objects",
+      },
+    },
+  },
+  depend            => { $objects => 'unzipbuild' },
   META_MERGE        => {
     "meta-spec" => { version => 2 },
     resources => {
@@ -103,12 +107,11 @@ sub MY::postamble {
   require File::Copy;
   require Cwd;
 
-  my $use_makefile    = File::Spec->catfile($unzip, $os, $osmakefile);
-  my $cd = $self->cd($unzip, "\$(MAKE) $osmaketarget \$(PASTHRU)");
+  my $makefile    = File::Spec->catfile($os, $osmakefile);
+  my $cd = $self->cd($unzip, "\$(MAKE) \$(USEMAKEFILE) $makefile $osmaketarget \$(PASTHRU)");
   <<EOF;
 
-$makefile_target :
-	\$(CP) $use_makefile $makefile_target
+unzipbuild :
 	$cd
 EOF
 }
