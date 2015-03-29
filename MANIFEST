@@ -48,14 +48,17 @@ unzip-6.0/aosvs/make_unz.cli
 unzip-6.0/api.c
 unzip-6.0/apihelp.c
 unzip-6.0/atari/Contents
+unzip-6.0/atari/Makefile
 unzip-6.0/atari/atari.c
 unzip-6.0/atari/make_unz.mup
 unzip-6.0/atheos/Contents
+unzip-6.0/atheos/Makefile
 unzip-6.0/atheos/README
 unzip-6.0/atheos/athcfg.h
 unzip-6.0/atheos/atheos.c
 unzip-6.0/atheos/atheos.h
 unzip-6.0/beos/Contents
+unzip-6.0/beos/Makefile
 unzip-6.0/beos/README
 unzip-6.0/beos/beocfg.h
 unzip-6.0/beos/beos.c
@@ -108,6 +111,7 @@ unzip-6.0/gbloffs.c
 unzip-6.0/globals.c
 unzip-6.0/globals.h
 unzip-6.0/human68k/Contents
+unzip-6.0/human68k/Makefile
 unzip-6.0/human68k/crc_68.s
 unzip-6.0/human68k/flate.s
 unzip-6.0/human68k/human68k.c
@@ -202,6 +206,7 @@ unzip-6.0/proginfo/timezone.txt
 unzip-6.0/proginfo/ziplimit.txt
 unzip-6.0/qdos/Contents
 unzip-6.0/qdos/IZREADME.SMS
+unzip-6.0/qdos/Makefile
 unzip-6.0/qdos/callstub.c
 unzip-6.0/qdos/config.S
 unzip-6.0/qdos/crc68.s
@@ -295,6 +300,7 @@ unzip-6.0/vms/vmsdefs.h
 unzip-6.0/vms/zlib.h
 unzip-6.0/win32-experimental/unz60d10_w32wide-Unicode_patch.txt
 unzip-6.0/win32/Contents
+unzip-6.0/win32/Makefile
 unzip-6.0/win32/Makefile.bc
 unzip-6.0/win32/Makefile.dj
 unzip-6.0/win32/Makefile.emx
