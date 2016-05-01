@@ -1,6 +1,6 @@
 use 5.006;
 my $EUMM_version;
-BEGIN { $EUMM_version = '7.05_06' }
+BEGIN { $EUMM_version = '7.14' }
 use ExtUtils::MakeMaker $EUMM_version;
 use File::Spec;
 use strict;
