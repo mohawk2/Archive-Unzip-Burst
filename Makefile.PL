@@ -46,6 +46,7 @@ if (not defined $os) {
   $os = $osdesc->[1];
   $osmakefile = $osdesc->[2];
   $osmaketarget = $osdesc->[3];
+  $osobjext = $osdesc->[4];
 }
 
 if ($os eq 'unix') {
