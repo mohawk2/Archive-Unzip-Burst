@@ -1,5 +1,8 @@
 Revision history for Perl extension Archive::Unzip::Burst.
 
+0.04 2016-05-01
+	- update Makefile.PL for XSMULTI EUMM version (7.14)
+
 0.03   Thu Jan 15 02:13:23 GMT 2015
         - Update unzip version to 6.0
         - Rewrote build system to eliminate misuse of "static" target in res
