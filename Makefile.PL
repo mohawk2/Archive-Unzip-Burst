@@ -73,7 +73,7 @@ WriteMakefile(
   ABSTRACT_FROM     => 'lib/Archive/Unzip/Burst.pm',
   AUTHOR            => 'Steffen Mueller <smueller@cpan.org>',
   DEFINE            => qq{-DDLL}, # not defines, removed -fPIC -O3
-  INC               => "-I. -I$unzip -I$unzip/$os",
+  INC               => "-I.",
   LICENSE           => 'perl',
   clean             => {
     FILES => "$objects " . join(' ', map "$unzip/$_",
