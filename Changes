@@ -1,5 +1,11 @@
 Revision history for Perl extension Archive::Unzip::Burst.
 
+0.06 2016-05-07
+	- remove unnecessary -I from Makefile.PL
+
+0.05 2016-05-02
+	- set $osobjext in os fallback (from Slaven Rezic)
+
 0.04 2016-05-01
 	- update Makefile.PL for XSMULTI EUMM version (7.14)
 
