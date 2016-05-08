@@ -15,11 +15,12 @@ my $objects;
 my $makefile_target = File::Spec->catfile($unzip, "Makefile");
 
 my %OS = (
-  win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'lib CC_CPU_OPT= NOASM=1', '', "-I$unzip", 1],
-  linux => [qr/linux/i,   'unix',  'Makefile',     'generic_shlib', '.pic', '', 1],
-  os2 =>   [qr/os2/i,     'os2',   'makefile.os2', 'gcc gccdyn',    '',     '', 0],
-  dos =>   [qr/dos/i,     'msdos', 'makefile.msc', 'default',       '',     '', 0],
-  macos => [qr/macos/i,   'unix',  'Makefile',     'generic_shlib', '.pic', '', 0],
+  win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'lib CC_CPU_OPT= NOASM=1', '',     "-I$unzip", 1],
+  linux => [qr/linux/i,   'unix',  'Makefile',     'generic_shlib',           '.pic', '',         1],
+  os2 =>   [qr/os2/i,     'os2',   'makefile.os2', 'gcc gccdyn',              '',     '',         0],
+  dos =>   [qr/dos/i,     'msdos', 'makefile.msc', 'default',                 '',     '',         0],
+  macos => [qr/macos/i,   'unix',  'Makefile',     'generic_shlib',           '.pic', '',         0],
+  darwin =>[qr/darwin/i,  'unix',  'Makefile',     'macosx',                  '.pic', '',         0],
 );
 
 foreach (keys %OS) {
@@ -62,6 +63,10 @@ if ($os eq 'unix') {
   } else {
     $osmakefile = 'Makefile'; # use the VC nmake one and hope for best
     $objects = File::Spec->catfile($unzip, "unzip32.lib"),
+  }
+} elsif ($os eq 'darwin') {
+  if ($Config{cc} =~ /\bgcc\b/) {
+    $osmaketarget .= '_gcc';
   }
 } else {
   die "Funny OS. Don't know what to link.";
