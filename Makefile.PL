@@ -7,7 +7,7 @@ use strict;
 use warnings;
 use Config;
 
-my ($os, $osmakefile, $osmaketarget, $osobjext);
+my ($os, $osmakefile, $osmaketarget, $osobjext, $osinc);
 my $unzip = "unzip-6.0";
 my $exe = $Config::Config{_exe};
 my $o   = $Config::Config{obj_ext};
@@ -15,11 +15,11 @@ my $objects;
 my $makefile_target = File::Spec->catfile($unzip, "Makefile");
 
 my %OS = (
-  win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'lib CC_CPU_OPT= NOASM=1',           '',     1],
-  linux => [qr/linux/i,   'unix',  'Makefile',     'generic_shlib', '.pic', 1],
-  os2 =>   [qr/os2/i,     'os2',   'makefile.os2', 'gcc gccdyn',    '',     0],
-  dos =>   [qr/dos/i,     'msdos', 'makefile.msc', 'default',       '',     0],
-  macos => [qr/macos/i,   'unix',  'Makefile',     'generic_shlib', '.pic', 0],
+  win32 => [qr/mswin32/i, 'win32', 'Makefile.gcc', 'lib CC_CPU_OPT= NOASM=1', '', "-I$unzip", 1],
+  linux => [qr/linux/i,   'unix',  'Makefile',     'generic_shlib', '.pic', '', 1],
+  os2 =>   [qr/os2/i,     'os2',   'makefile.os2', 'gcc gccdyn',    '',     '', 0],
+  dos =>   [qr/dos/i,     'msdos', 'makefile.msc', 'default',       '',     '', 0],
+  macos => [qr/macos/i,   'unix',  'Makefile',     'generic_shlib', '.pic', '', 0],
 );
 
 foreach (keys %OS) {
@@ -30,7 +30,8 @@ foreach (keys %OS) {
     $osmakefile   = $desc->[2];
     $osmaketarget = $desc->[3]||'generic_shlib';
     $osobjext     = $desc->[4];
-    if (not $desc->[5]) {
+    $osinc        = $desc->[5];
+    if (not $desc->[6]) {
       warn "BEWARE! The module has not been tested on this OS!\n"
           ."It turns out its working, please inform the maintainer so he can\n"
           ."remove this notice. Thank you! (Patches welcome, too.)\n";
@@ -73,7 +74,7 @@ WriteMakefile(
   ABSTRACT_FROM     => 'lib/Archive/Unzip/Burst.pm',
   AUTHOR            => 'Steffen Mueller <smueller@cpan.org>',
   DEFINE            => qq{-DDLL}, # not defines, removed -fPIC -O3
-  INC               => "-I.",
+  INC               => "-I. " . $osinc,
   LICENSE           => 'perl',
   clean             => {
     FILES => "$objects " . join(' ', map "$unzip/$_",
