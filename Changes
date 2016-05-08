@@ -1,5 +1,12 @@
 Revision history for Perl extension Archive::Unzip::Burst.
 
+0.08 2016-05-08
+	- release with Changes
+
+0.07 2016-05-08
+	- reinstate -I in Makefile.PL but only Win32
+        - try supporting Darwin
+
 0.06 2016-05-07
 	- remove unnecessary -I from Makefile.PL
 
